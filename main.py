@@ -24,7 +24,6 @@ def fetch_stock_data():
     return None
 
 
-
 def create_chart(data):
     if 'Global Quote' in data:
         "This line extracts the dictionary object with the key 'Global Quote' from the data dictionary. " \
