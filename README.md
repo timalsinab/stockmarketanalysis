@@ -12,3 +12,7 @@ Second Iteration
 
 Third Iteration
 ![S P updated](https://github.com/timalsinab/stockmarketexchange/assets/112141352/115fb094-6c19-4082-bf33-c75893342798)
+
+
+Fourth Iteration
+![Prices and returns](https://github.com/timalsinab/stockmarketexchange/assets/112141352/0a192c26-dd27-4b81-86c9-decca1381467)
