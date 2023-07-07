@@ -1,67 +1,57 @@
 import pandas as pd
 import yfinance as yf
 import datetime
-import tkinter as tk
-from tkinter import messagebox
 import matplotlib.pyplot as plt
 
-# Function to fetch data based on the selected interval
-def fetch_data(interval):
+# Function to fetch data and plot line graphs for prices and returns
+def fetch_data():
     # Get the current date
     today = datetime.datetime.now().date()
 
-    # Calculate the start date based on the selected interval
-    if interval == 'Weekly':
-        start = today - datetime.timedelta(weeks=52)
-    elif interval == 'Monthly':
-        start = today - datetime.timedelta(weeks=52 * 5)
-    elif interval == 'Yearly':
-        start = today - datetime.timedelta(weeks=52 * 10)
-    else:
-        messagebox.showerror('Error', 'Invalid interval selected.')
-        return
+    # Calculate the start date for weekly, monthly, and yearly intervals
+    start_weekly = today - datetime.timedelta(weeks=52)
+    start_monthly = today - datetime.timedelta(days=365)
+    start_yearly = today - datetime.timedelta(days=365 * 10)
+
+    # Define the ticker symbols for the companies
+    tickers = ['MSFT', 'AMZN', 'AAPL', '^GSPC']
 
     # Fetch the data using yfinance
     try:
-        sp500 = yf.download('^GSPC', start=start, end=today, interval='1d')
+        data = yf.download(tickers, start=start_weekly, end=today, interval='1wk')
     except Exception as e:
-        messagebox.showerror('Error', str(e))
+        print('An error occurred:', str(e))
         return
 
-    # Calculate daily returns
-    sp500['daily_return'] = sp500['Close'].pct_change()
+    # Extract the adjusted closing prices
+    prices = data['Adj Close']
 
-    # Drop NaN values
-    sp500.dropna(inplace=True)
+    # Calculate the weekly, monthly, and yearly returns
+    returns = prices.pct_change().dropna()
 
-    # Plot the data
-    sp500['daily_return'].plot(title='S&P 500 Daily Returns')
-    sp500['Close'].plot(title='S&P 500 Price')
+    # Create subplots for prices and returns
+    fig, axs = plt.subplots(3, 1, figsize=(12, 12), sharex=True)
+
+    # Plot the prices and returns for each company
+    for company in tickers:
+        axs[0].plot(prices[company], label=company, alpha=0.7)
+        axs[1].plot(returns[company], label=company, alpha=0.7)
+        axs[2].plot(prices[company], label=company, alpha=0.7)
+        axs[2].plot(returns[company], label=f'{company} Returns', linestyle='--', alpha=0.7)
+
+    # Set titles and legends for each subplot
+    axs[0].set_title('Prices')
+    axs[1].set_title('Returns')
+    axs[2].set_title('Prices and Returns')
+    axs[0].legend()
+    axs[1].legend()
+    axs[2].legend()
+
+    # Adjust spacing between subplots
+    plt.tight_layout()
 
     # Show the plot
     plt.show()
 
-# Function to create the GUI
-def create_gui():
-    # Create the GUI window
-    window = tk.Tk()
-    window.title('S&P 500 Data')
-
-    # Increase the size of the window
-    window.geometry('600x400')
-
-    # Create buttons for different intervals
-    btn_weekly = tk.Button(window, text='Weekly', command=lambda: fetch_data('Weekly'))
-    btn_weekly.pack()
-
-    btn_monthly = tk.Button(window, text='Monthly', command=lambda: fetch_data('Monthly'))
-    btn_monthly.pack()
-
-    btn_yearly = tk.Button(window, text='Yearly', command=lambda: fetch_data('Yearly'))
-    btn_yearly.pack()
-
-    # Start the GUI event loop
-    window.mainloop()
-
-# Call the create_gui() function to create and run the GUI
-create_gui()
+# Call the fetch_data() function to fetch data and display the line graphs
+fetch_data()
