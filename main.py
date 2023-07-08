@@ -2,6 +2,7 @@ import pandas as pd
 import yfinance as yf
 import datetime
 import matplotlib.pyplot as plt
+from matplotlib.widgets import CheckButtons
 
 # Function to fetch data and plot line graphs for prices and returns
 def fetch_data():
@@ -32,12 +33,18 @@ def fetch_data():
     # Create subplots for prices and returns
     fig, axs = plt.subplots(3, 1, figsize=(12, 12), sharex=True)
 
+    # Create a dictionary to store the visibility status of each line
+    line_visibility = {company: True for company in tickers}
+
     # Plot the prices and returns for each company
+    lines = []
     for company in tickers:
-        axs[0].plot(prices[company], label=company, alpha=0.7)
-        axs[1].plot(returns[company], label=company, alpha=0.7)
-        axs[2].plot(prices[company], label=company, alpha=0.7)
-        axs[2].plot(returns[company], label=f'{company} Returns', linestyle='--', alpha=0.7)
+        line_prices, = axs[0].plot(prices[company], label=company, alpha=0.7, visible=line_visibility[company])
+        line_returns, = axs[1].plot(returns[company], label=company, alpha=0.7, visible=line_visibility[company])
+        line_both, = axs[2].plot(prices[company], label=company, alpha=0.7, visible=line_visibility[company])
+        axs[2].plot(returns[company], label=f'{company} Returns', linestyle='--', alpha=0.7,
+                    visible=line_visibility[company])
+        lines.append((line_prices, line_returns, line_both))
 
     # Set titles and legends for each subplot
     axs[0].set_title('Prices')
@@ -50,8 +57,25 @@ def fetch_data():
     # Adjust spacing between subplots
     plt.tight_layout()
 
+    # Create checkboxes for toggling line visibility
+    checkboxes_ax = plt.axes([0.91, 0.3, 0.08, 0.6])  # Updated position of the checkboxes
+    checkboxes = CheckButtons(checkboxes_ax, tickers, [line_visibility[company] for company in tickers])
+
+    # Function to handle checkbox toggling
+    def toggle_lines(label):
+        line_visibility[label] = not line_visibility[label]
+        for line in lines:
+            if line[0].get_label() == label:
+                line[0].set_visible(line_visibility[label])
+                line[1].set_visible(line_visibility[label])
+                line[2].set_visible(line_visibility[label])
+        plt.draw()
+
+    # Connect the checkbox toggling function to the CheckButtons
+    checkboxes.on_clicked(toggle_lines)
+
     # Show the plot
     plt.show()
 
-# Call the fetch_data() function to fetch data and display the line graphs
+# Call the fetch_data() function to fetch data and display the line graphs with the GUI
 fetch_data()
