@@ -20,7 +20,9 @@ Fourth Iteration
 Fifth Iteration
 ![added gui](https://github.com/timalsinab/stockmarketexchange/assets/112141352/b8ebc176-e9ce-4c7e-a6c6-3ff09912d5e2)
 
-
 Sixth Iteration
-![top5 performing stocks](https://github.com/timalsinab/stockmarketexchange/assets/112141352/dc91545f-cebd-4156-b155-6a7f8b22e607)
-![lastmonthstocks](https://github.com/timalsinab/stockmarketexchange/assets/112141352/ff2cc895-a055-41a8-a5c4-c27dd64e29a3)
+https://github.com/timalsinab/stockmarketexchange/assets/112141352/e4c861d7-4fc7-4869-8aba-18d57bd8f0a2
+
+
+
+
