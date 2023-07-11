@@ -3,6 +3,7 @@ import yfinance as yf
 import datetime
 import matplotlib.pyplot as plt
 from matplotlib.widgets import CheckButtons
+import requests
 
 
 # Function to fetch data and plot line graphs for prices and returns
@@ -141,5 +142,42 @@ def fetch_sp500_data():
     return prices_df
 
 
+# Function to fetch current news
+def fetch_news():
+    # Define the API endpoint and parameters
+    url = 'https://api.currentsapi.services/v1/latest-news'
+    params = {
+        'apiKey': 'b1CSGgbw2H1UASz3hreryabagAcfxeFV1Vm37tAV6qQQO8Ox',  # Replace with your API key
+        'language': 'en',
+        'category': 'business',
+        'keywords': 'stock market',
+        'pageSize': 5  # Number of news articles to fetch
+    }
+
+    # Send a GET request to the API endpoint
+    response = requests.get(url, params=params)
+
+    # Check if the request was successful
+    if response.status_code == 200:
+        # Get the JSON response
+        data = response.json()
+
+        # Extract the news articles
+        articles = data['news']
+
+        # Print the headlines and descriptions of the news articles
+        print("Latest News:")
+        for article in articles:
+            print(f"Headline: {article['title']}")
+            print(f"Description: {article['description']}")
+            print("")
+
+    else:
+        print("Failed to fetch news.")
+
+
 # Call the fetch_data() function to fetch data and display the line graphs with the GUI
 fetch_data()
+
+# Call the fetch_news() function to fetch and display the latest news
+fetch_news()
